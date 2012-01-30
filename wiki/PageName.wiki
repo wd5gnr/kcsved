@@ -1,0 +1,20 @@
+#summary Project goals
+
+= Introduction =
+
+This simple Qt program lets you easily edit CSV files. For best results
+the first line should be headings and should have as many fields as the 
+longest line in the rest of the file, although neither of these are necessary.
+
+Features
+  * Allows quoted fields (although quotes not required for fields that do not contain commas)
+  * Respects the two quote escape (but does not translate back and forth)
+  * Allows selection of quote or comma character in options.
+
+
+
+
+= Details =
+
+Screenshot
+http://kcsved.googlecode.com/svn/wiki/images/screenshot_023.png
