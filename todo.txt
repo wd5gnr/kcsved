@@ -1,0 +1,5 @@
+1. New is crashing (maybe fixed)
+2. New document, add fields, looks like some extra record gets made? (not sure)
+3. Tooltip and tab order
+4. Ensure error checking occurs everywhere
+5. Consider feature: Drag/drop mode lets you drag a label to another label to move a column
