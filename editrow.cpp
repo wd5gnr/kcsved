@@ -33,7 +33,7 @@ EditRow::EditRow(void)
    box=new QHBoxLayout();
    _label=new QLineEdit("");
    _label->setReadOnly(true);
-   _label->setStyleSheet("QLineEdit { color: gray; border-radius: 8px; }");
+   _label->setStyleSheet("QLineEdit { background: palette(window); }");
    _label->setMinimumWidth(64);
    box->addWidget(_label);
  //  _label->setFixedWidth(80);
