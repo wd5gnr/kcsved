@@ -40,6 +40,7 @@ selector::~selector()
 int selector::exec(csvmodel &model,int item, int current)
 {
     int i,rv;
+    ui->columnName->setText((*model.rows[0])[item]);
     for (i=1;i<model.rows.count();i++)
         ui->listWidget->addItem((*model.rows[i])[item]);
     ui->listWidget->setCurrentRow(current);

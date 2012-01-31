@@ -16,13 +16,13 @@ public:
     EditRow(void);
     ~EditRow();
     void AddRow(QWidget *parent);
-    QLabel *label(void) { return _label; }
+    QLineEdit *label(void) { return _label; }
     QPushButton *vButton(void) { return _vButton; }
     QPushButton *eButton(void) { return _eButton; }
     QCSVLineEdit *edit(void) { return _edit; }
 protected:
     QHBoxLayout *box;
-    QLabel *_label;
+    QLineEdit *_label;
     QCSVPushButton *_vButton;
     QCSVPushButton *_eButton;
     QCSVLineEdit *_edit;

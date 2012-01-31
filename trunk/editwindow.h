@@ -12,7 +12,7 @@ class editWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit editWindow(QWidget *parent = 0,QString textin="");
+    editWindow(QWidget *parent=0, QString textin="", QString title="");
     ~editWindow();
     QString text;
     bool changed;

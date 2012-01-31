@@ -63,7 +63,8 @@ KCsvEdMain::~KCsvEdMain()
 void KCsvEdMain::edit_item(int item)
 {
     QString text=rows[item]->edit()->text();  // pull current text not model text
-    editWindow *editor=new editWindow(this,text);
+    QString title=rows[item]->label()->text();
+    editWindow *editor=new editWindow(this,text,title);
     editor->exec();
     if (editor->result()!=QDialog::Rejected && editor->changed)
     {
@@ -117,6 +118,7 @@ void KCsvEdMain::addeditrow(int i)
     connect(edit->vButton(),SIGNAL(focussed(bool)),this,SLOT(btnfocus(bool)));
     connect(edit->eButton(),SIGNAL(focussed(bool)),this,SLOT(btnfocus(bool)));
 
+
     mapper->setMapping(edit->eButton(),i);
     vmapper->setMapping(edit->vButton(),i);
     rows<<edit;
@@ -159,6 +161,7 @@ void KCsvEdMain::viewupdate(void)
         {
             rows[i]->label()->setText((*model->rows[0])[i]);
             rows[i]->label()->setToolTip((*model->rows[0])[i]);
+            rows[i]->label()->setCursorPosition(0);
         }
         if (model->rows[current_row]->count()>i)  // this handles the case where a row is longer than the header
             rows[i]->edit()->setText((*model->rows[current_row])[i]);
@@ -363,7 +366,7 @@ void KCsvEdMain::on_actionEdit_Header_toggled()
 // Simple about box
 void KCsvEdMain::on_action_About_triggered()
 {
-    QMessageBox::about(this,tr("About kcsved"),tr("kcsved - A simple CSV editor by <A href=http://www.awce.com>http://www.awce.com</a>. <A href=http://www.gnu.org/copyleft/gpl.html>License: GNU General Public License Version 3</A>"));
+    QMessageBox::about(this,tr("About kcsved"),tr("kcsved V1.0 - A simple CSV editor by <A href=http://www.awce.com>http://www.awce.com</a>. <A href=http://www.gnu.org/copyleft/gpl.html>License: GNU General Public License Version 3</A>"));
 }
 
 

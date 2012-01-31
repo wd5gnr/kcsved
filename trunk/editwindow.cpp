@@ -22,12 +22,13 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 #include "ui_editwindow.h"
 
 // Create edit window
-editWindow::editWindow(QWidget *parent,QString textin) :
+editWindow::editWindow(QWidget *parent,QString textin, QString title) :
     QDialog(parent),
     ui(new Ui::editWindow)
 {
     text=textin;
     ui->setupUi(this);
+    ui->columnName->setText(title);
     ui->textEdit->setPlainText(text);
     changed=false;
 }

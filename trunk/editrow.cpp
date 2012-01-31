@@ -25,14 +25,18 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 
 
 // Construct a graphic box for a given column in the file including controls
+// NOTE: Label used to be a label but is now a read only line edit
 EditRow::EditRow(void)
 {
     QStyle *style;
     style=QApplication::style();
    box=new QHBoxLayout();
-   _label=new QLabel("");
+   _label=new QLineEdit("");
+   _label->setReadOnly(true);
+   _label->setStyleSheet("QLineEdit { color: gray; border-radius: 8px; }");
+   _label->setMinimumWidth(64);
    box->addWidget(_label);
-   _label->setFixedWidth(64);
+ //  _label->setFixedWidth(80);
    _vButton=new QCSVPushButton(style->standardIcon(QStyle::SP_ArrowDown),"");
    _vButton->setFixedWidth(25);
    _vButton->setToolTip("Select a new record by this field");
@@ -42,6 +46,9 @@ EditRow::EditRow(void)
    _eButton->setFixedWidth(25);
    _eButton->setToolTip("Edit this field in a larger editor");
    box->addWidget(_eButton);
+   box->setStretch(0,1);
+   box->setStretch(2,3);
+
 }
 
 // clean up everything
