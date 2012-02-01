@@ -72,16 +72,16 @@ private slots:
 
 private:
     Ui::KCsvEdMain *ui;
-    QList<EditRow *> rows;
-    QSignalMapper *mapper;
+    QList<EditRow *> rows;   // UI rows
+    QSignalMapper *mapper;   // mappers used to aggregate signals to one slot
     QSignalMapper *vmapper;
-    csvmodel *model;
-    unsigned current_row;
-    void viewupdate(void);
-    void commit(void);
-    int lowindex;
-    void addeditrow(int);
-    void destroyUI();
+    csvmodel model;         // the document
+    unsigned current_row;     // our spot in the document
+    void viewupdate(void);   // refresh display
+    void commit(void);      // scrape the screen into the document
+    unsigned lowindex;         // 0 if the header is editable data, 1 if not
+    void addeditrow(int);    // add another edit row
+    void destroyUI();     // kill all the UI
 
 protected:
     void closeEvent(QCloseEvent *);
