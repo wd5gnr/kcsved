@@ -8,7 +8,7 @@ longest line in the rest of the file, although neither of these are necessary.
 
 Features
   * Allows quoted fields (although quotes not required for fields that do not contain commas)
-  * Respects the two quote escape (but does not translate back and forth)
+  * Respects the two quote escape and now translates it both in and out
   * Allows selection of quote or comma character in options.
 
 
@@ -16,5 +16,12 @@ Features
 
 = Details =
 
-Screenshot
+Screenshots
+
 http://kcsved.googlecode.com/svn/wiki/images/screenshot_023.png
+
+http://kcsved.googlecode.com/svn/wiki/images/screenshot_024.png
+
+http://kcsved.googlecode.com/svn/wiki/images/screenshot_025.png
+
+
