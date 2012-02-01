@@ -308,11 +308,11 @@ void KCsvEdMain::on_action_Copy_triggered()
 void KCsvEdMain::select(int item)
 {
     selector *dlg=new selector(this);
-    dlg->exec(model,item, current_row-1);
+    dlg->exec(model,item, current_row, lowindex);
     if (dlg->result()!=QDialog::Rejected)
     {
         commit();
-        current_row=dlg->pick+1;
+        current_row=dlg->pick+lowindex;
         viewupdate();
     }
 }

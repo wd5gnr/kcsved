@@ -16,10 +16,12 @@ class selector : public QDialog
 public:
     explicit selector(QWidget *parent = 0);
     ~selector();
-    int pick;
+    unsigned pick;
 
 public slots:
-    int exec(csvmodel &model, int item, int current);
+    // open up given model, which column, the current selection, and the low # (0 or 1 depending on header editing)
+    // returns the selection # in pick
+    int exec(csvmodel &model, int item, int current, unsigned low);
 
 private slots:
 
