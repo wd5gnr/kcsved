@@ -84,6 +84,7 @@ bool csvmodel::readdoc(QString fnqs)
         QStringList curRow;
         QChar c;
         line=in.readLine();   // get a line
+        if (line.isEmpty()) continue;
         line+=QString("\n");  // add end marker
 // set initial conditions
         state=NOFIELD;
@@ -94,6 +95,11 @@ bool csvmodel::readdoc(QString fnqs)
             switch (state)
             {
             case NOFIELD:   // not inside a field (yet)
+                if (c==QChar('\n'))
+                {
+                    state=DONE;
+                    continue;
+                }
                 if (c.isSpace()) continue;  // skip leading space in field
                 if (c==quote)
                 {

@@ -37,14 +37,14 @@ selector::~selector()
     delete ui;
 }
 
-int selector::exec(csvmodel &model,int item, int current)
+int selector::exec(csvmodel &model,int item, int current, unsigned low)
 {
     unsigned i;
     int rv;
     ui->columnName->setText(model.getCol(0,item));
-    for (i=1;i<model.count();i++)
+    for (i=low;i<model.count();i++)
         ui->listWidget->addItem(model.getCol(i,item));
-    ui->listWidget->setCurrentRow(current);
+    ui->listWidget->setCurrentRow(current-low);
     rv=QDialog::exec();
     pick=ui->listWidget->currentRow();
     return rv;
