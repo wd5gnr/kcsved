@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>294</height>
+    <width>392</width>
+    <height>292</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,6 +80,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>textEdit</tabstop>
+  <tabstop>htmlmode</tabstop>
+  <tabstop>saveBtn</tabstop>
+  <tabstop>cancelBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

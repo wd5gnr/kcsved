@@ -55,6 +55,7 @@ void editWindow::on_saveBtn_clicked()
 // html preview. Since QT dinks with the HTML, this is read only
 // and we never save the HTML, just generate it on demand to check
 // our markup
+// Note that complex markup doesn't look right... probably should use QWebView
 void editWindow::on_htmlmode_clicked()
 {
     if (ui->htmlmode->isChecked())   // go from plaint to HTML

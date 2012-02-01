@@ -15,7 +15,9 @@ class EditRow
 public:
     EditRow(void);
     ~EditRow();
+    // Add a row
     void AddRow(QWidget *parent);
+    // Access components
     QLineEdit *label(void) { return _label; }
     QPushButton *vButton(void) { return _vButton; }
     QPushButton *eButton(void) { return _eButton; }
