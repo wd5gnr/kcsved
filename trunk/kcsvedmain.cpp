@@ -78,8 +78,7 @@ void KCsvEdMain::edit_item(int item)
 // wipe out dynamic part of UI (useful if you are going to replace it with another
 void KCsvEdMain::destroyUI()
 {
-    for (int i=0;i<rows.count();i++)
-        delete (rows.takeAt(0));
+    qDeleteAll(rows);
     rows.clear();
 }
 
