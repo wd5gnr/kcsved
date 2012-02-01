@@ -33,7 +33,7 @@ EditRow::EditRow(void)
    box=new QHBoxLayout();
    _label=new QLineEdit("");
    _label->setReadOnly(true);
-   _label->setStyleSheet("QLineEdit { background: palette(window); }");
+   _label->setStyleSheet("QLineEdit { background: palette(window); border: none; }");
    _label->setMinimumWidth(64);
    box->addWidget(_label);
  //  _label->setFixedWidth(80);
@@ -51,7 +51,7 @@ EditRow::EditRow(void)
 
 }
 
-// clean up everything
+// clean up everything  (required since parent doesn't die)
 EditRow::~EditRow()
 {
     delete _label;
