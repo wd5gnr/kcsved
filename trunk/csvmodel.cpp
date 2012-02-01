@@ -27,7 +27,7 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 #include <QSettings>
 #include <QVariant>
 
-
+// Third party parser was messing up so rewrote it (twice, since the first time got eaten by the dog)
 
 csvmodel::csvmodel()
 {
@@ -64,60 +64,138 @@ void csvmodel::newdoc(bool emptydoc)
 
 bool csvmodel::readdoc(QString fnqs)
 {
-    csv_parser file_parser;
-    QSettings settings;
+    enum parsestate { NOFIELD, QFIELD, FIELD, QFEND, DONE };
+    parsestate state;
     bool headerin=false;
-    char q,c,nl;   // quote, comma, newline
+    QFile infile(fnqs);
+    if (!infile.open(QIODevice::ReadOnly)) return false;
+    QTextStream in(&infile);
+    QSettings settings;
+    int i;
+    QChar quote, sep;
     int qstd;
     // get the values out of the settings
     qstd=settings.value("characters/inquotestd",1).toInt();
-    q=qstd?'"':settings.value("characters/inquote",'"').toString()[0].toAscii();
-    c=settings.value("characters/incomma",",").toString()[0].toAscii();
-    nl=settings.value("characters/innewline","\n").toString()[0].toAscii();
-    const char*fn=fnqs.toLatin1();
-    // clear out anything already there
+    quote=qstd?QChar('"'):settings.value("characters/inquote",'"').toString()[0];
+    sep=settings.value("characters/incomma",",").toString()[0];
     newdoc();
-    // get going
-    if (!file_parser.init(fn)) return false;
-    file_parser.set_enclosed_char(q,ENCLOSURE_OPTIONAL);
-    file_parser.set_field_term_char(c);
-    file_parser.set_line_term_char(nl);
-    // loop through all the rows
-    while (file_parser.has_more_rows())
+    while (!in.atEnd())
     {
-        unsigned int i;
-        QString *str;
-        csv_row row=file_parser.get_row();  // get row
-        QStringList *rowlist=new QStringList;  // put it in a string list
+        QString line, field;
+        QStringList *curRow=new QStringList();
+        QChar c;
+        line=in.readLine();
+        line+=QString("\n");  // end marker
+        state=NOFIELD;
+        i=0;
+        while (state!=DONE && c!=QChar('\n'))  // should not need the \n test but safe
+        {
+            c=line[i++];
+            switch (state)
+            {
+            case NOFIELD:
+                if (c.isSpace()) continue;  // skip leading space in field
+                if (c==quote)
+                {
+                    state=QFIELD;
+                    continue;
+                }
+                if (c==sep)
+                {
+                    curRow->append(field);
+                    // field is empty so no need to clear it
+                    continue;
+                }
+                field.append(c);
+                state=FIELD;
+                continue;
+                break;
+            case QFIELD:
+                if (c==quote)
+                {
+                    state=QFEND;
+                    continue;
+                }
+                if (c==QChar('\n'))
+                {
+                    // technically an error but we will take it
+                    curRow->append(field);
+                    state=DONE;
+                    continue;
+                }
+                field.append(c);
+                continue;
+                break;
+            case FIELD:
+                if (c==sep)
+                {
+                    state=NOFIELD;
+                    curRow->append(field);
+                    field.clear();
+                    continue;
+                }
+                if (c==QChar('\n'))
+                {
+                    state=DONE;
+                    curRow->append(field);
+                    continue;
+                }
+                field.append(c);
+                continue;
+                break;
+            case QFEND:
+                if (c==sep)
+                {
+                    state=NOFIELD;
+                    curRow->append(field);
+                    field.clear();
+                    continue;
+                }
+                if (c==quote)
+                {
+                    state=QFIELD;
+                    field.append("\"");
+                    continue;
+                }
+                if (c==QChar('\n'))
+                {
+                    state=DONE;
+                    curRow->append(field);
+                    continue;
+                }
+                break;
+            case DONE:
+                // never get here but shut up compiler!
+                break;
+            }
+
+        }
+        rows<<curRow;
         if (!headerin)  // do we need the header?
         {
             headerin=true;  // never again on this load
             if (!settings.value("default/firstheader",true).toBool())
             {
-                for (i=0;i<row.size();i++)  // build a fake header
+                QStringList *hdr=new QStringList;
+                for (i=0;i<curRow->size();i++)  // build a fake header
                 {
                     QString fld;
                     fld="Field " + QString::number(i+1);
-                    rowlist->append(fld);
+                    hdr->append(fld);
                 }
-                rows<<rowlist;   // prime to make this line, line #1 instead of 0
-                rowlist=new QStringList;
+                rows<<hdr;   // prime to make this line, line #1 instead of 0
             }
         }
         // we need to remember the biggest line in the document
-        if (colct<row.size()) colct=row.size();
-        // transfer it all over
-        for (i=0;i<row.size();i++)
-        {
-            str = new QString(row[i].c_str());
-            rowlist->append(*str);
-        }
-        rows<<rowlist;
+        if (colct<curRow->size()) colct=curRow->size();
     }
+    infile.close();
     openfile=fnqs;
     return true;
-
 }
+
+
+
 
 /* save a document using its known name */
 bool csvmodel::savedoc(void)
@@ -127,7 +205,7 @@ bool csvmodel::savedoc(void)
 
 
 
-/* Save a document with the given name */
+/* Save a document with the given name */ // need to improve error checking TODO
 bool csvmodel::savedoc(QString fnqs)
 {
     int i,j;
@@ -136,17 +214,17 @@ bool csvmodel::savedoc(QString fnqs)
     // to the backup and then rename the save file
     QTemporaryFile savefile;
     QSettings settings;
-    char q,c,nl;  // quote, comma, newline
+    QChar quote, sep;
     int qstd;
-// pick up characters from settings
+    bool writequote;
+    // pick up characters from settings
     qstd=settings.value("characters/outquotestd",1).toInt();
-    q=qstd?'"':settings.value("characters/outquote","\"").toString()[0].toAscii();
-    c=settings.value("characters/outcomma",",").toString()[0].toAscii();
-    nl=settings.value("characters/outnewline","\n").toString()[0].toAscii();
+    quote=qstd?QChar('"'):settings.value("characters/outquote","\"").toString()[0];
+    sep=settings.value("characters/outcomma",",").toString()[0];
     // don't delete the temp file automatically
     savefile.setAutoRemove(false);
 // Write it out
-    savefile.open();
+    if (!savefile.open()) return false;
     QTextStream out(&savefile);
     QString fld;
     QStringList *rowlist;
@@ -157,13 +235,16 @@ bool csvmodel::savedoc(QString fnqs)
         rowlist=rows[i];
         for (j=0;j<rowlist->count();j++)
         {
-            out<<q;
+            writequote=settings.value("default/writequote",true).toBool();
             fld=(*rowlist)[j];
+            if (fld.indexOf(sep)>=0) writequote=true;  // always write if sep appears in data
+            if (writequote) out<<quote;
+            if (writequote) fld.replace(quote,QString(quote)+QString(quote));
             out<<fld;
-            out<<q;
-            if (j<rowlist->count()-1) out<<c;
+            if (writequote) out<<quote;
+            if (j<rowlist->count()-1) out<<sep;
         }
-        out<<nl;
+        out<<'\n';
     }
     savefile.close();
     // this fails if fnqs already exists, so we need to rename it first and/or unlink
