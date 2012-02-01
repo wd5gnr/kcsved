@@ -22,6 +22,10 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 #include "ui_optdialog.h"
 #include <QSettings>
 
+// The options don't directly talk to the rest of the program
+// We simply load up from QSettings and then save back to the same place
+// Note that .sync is supposed to make sure they get written to disk
+
 optdialog::optdialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::optdialog)
@@ -50,7 +54,6 @@ optdialog::~optdialog()
 void optdialog::accept()
 {
     QSettings settings;
-    char c;
     settings.setValue("default/lowindex",ui->headeron->isChecked()?1:0);
     settings.setValue("default/firstheader",ui->headerRow->isChecked()?1:0);
     settings.setValue("default/writequote",ui->quoteSave->isChecked());

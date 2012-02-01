@@ -11,7 +11,7 @@ public:
     QStringList &getRow(int index) { return rows[index]; }
     QString &getCol(int row, int col) { return rows[row][col]; }
     bool isEmpty(void) { return rows.isEmpty(); }
-    int count(void) { return rows.count(); }
+    unsigned count(void) { return rows.count(); }
     void newdoc(bool emptydoc=false);  // create a new document for opening (false) or blank (true)
     bool readdoc(QString fnqs);       // read the file, true on success
     bool savedoc(QString fnqs);       // save a file, true on success

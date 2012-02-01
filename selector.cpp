@@ -39,7 +39,8 @@ selector::~selector()
 
 int selector::exec(csvmodel &model,int item, int current)
 {
-    int i,rv;
+    unsigned i;
+    int rv;
     ui->columnName->setText(model.getCol(0,item));
     for (i=1;i<model.count();i++)
         ui->listWidget->addItem(model.getCol(i,item));
