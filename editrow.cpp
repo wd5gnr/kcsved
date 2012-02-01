@@ -24,6 +24,7 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 #include <QApplication>
 
 
+
 // Construct a graphic box for a given column in the file including controls
 // NOTE: Label used to be a label but is now a read only line edit
 EditRow::EditRow(void)
@@ -36,7 +37,6 @@ EditRow::EditRow(void)
    _label->setStyleSheet("QLineEdit { background: palette(window); border: none; }");
    _label->setMinimumWidth(64);
    box->addWidget(_label);
- //  _label->setFixedWidth(80);
    _vButton=new QCSVPushButton(style->standardIcon(QStyle::SP_ArrowDown),"");
    _vButton->setFixedWidth(25);
    _vButton->setToolTip("Select a new record by this field");
@@ -62,7 +62,7 @@ EditRow::~EditRow()
 }
 
 
-// Add row to the parent's layout (note: the row is in its own layout
+// Add row to the parent's layout (note: the row is in its own layout)
 void EditRow::AddRow(QWidget *parent)
 {
     QBoxLayout *super=(QBoxLayout *)parent->layout();

@@ -156,21 +156,21 @@ void KCsvEdMain::viewupdate(void)
 {
     for (int i=0;i<model->columnCount();i++)
     {
-        if (model->rows[0]->count()>i)  // this handles the case where a row is longer than the header
+        if (model->getRow(0).count()>i)  // this handles the case where a row is longer than the header
         {
-            rows[i]->label()->setText((*model->rows[0])[i]);
-            rows[i]->label()->setToolTip((*model->rows[0])[i]);
+            rows[i]->label()->setText(model->getCol(0,i));
+            rows[i]->label()->setToolTip(model->getCol(0,i));
             rows[i]->label()->setCursorPosition(0);
         }
-        if (model->rows[current_row]->count()>i)  // this handles the case where a row is longer than the header
-            rows[i]->edit()->setText((*model->rows[current_row])[i]);
+        if (model->getRow(current_row).count()>i) // this handles the case where a row is longer than the header
+            rows[i]->edit()->setText(model->getCol(current_row,i));
         else
             rows[i]->edit()->setText("");
     }
     ui->action_First->setDisabled(current_row==lowindex);
     ui->action_Previous->setDisabled(current_row==lowindex);
-    ui->action_Next->setDisabled(current_row==model->rows.count()-1);
-    ui->action_Last->setDisabled(current_row==model->rows.count()-1);
+    ui->action_Next->setDisabled(current_row==model->count()-1);
+    ui->action_Last->setDisabled(current_row==model->count()-1);
     ui->statusBar->showMessage(QString(tr("Record: ")) + QString::number(current_row));
 
 }
@@ -206,13 +206,13 @@ void KCsvEdMain::focuschange(bool gotfocus)
 // scrape the data off the screen back to the model
 void KCsvEdMain::commit(void)
 {
-    if (model->rows.isEmpty()) return; // nothing to do
-    for (int i=0;i<model->rows[current_row]->count();i++)
+    if (model->isEmpty()) return; // nothing to do
+    for (int i=0;i<model->getRow(current_row).count();i++)
     {
-        if ((*model->rows[current_row])[i]!=rows[i]->edit()->text())
+        if (model->getCol(current_row,i)!=rows[i]->edit()->text())
         {
             ui->action_Save->setEnabled(true);
-            (*model->rows[current_row])[i]=rows[i]->edit()->text();
+            model->getCol(current_row,i)=rows[i]->edit()->text();
         }
 
     }
@@ -222,7 +222,7 @@ void KCsvEdMain::commit(void)
 void KCsvEdMain::on_action_Next_triggered()
 {
     commit();
-    if (current_row!=model->rows.count()) current_row++;
+    if (current_row!=model->count()) current_row++;
     viewupdate();
 }
 
@@ -246,7 +246,7 @@ void KCsvEdMain::on_action_First_triggered()
 void KCsvEdMain::on_action_Last_triggered()
 {
     commit();
-    current_row=model->rows.count()-1;
+    current_row=model->count()-1;
     viewupdate();
 }
 
@@ -334,7 +334,7 @@ void KCsvEdMain::on_action_Save_As_triggered()
 void KCsvEdMain::on_action_Save_triggered()
 {
     commit();
-    if (model->openfile.isEmpty()) on_action_Save_As_triggered(); else  model->savedoc();
+    if (model->openfile().isEmpty()) on_action_Save_As_triggered(); else  model->savedoc();
     setDirty(false);
 }
 
@@ -392,8 +392,8 @@ void KCsvEdMain::on_action_Delete_Row_triggered()
 void KCsvEdMain::on_action_Add_New_Row_triggered()
 {
     commit();
-    model->insertrow(model->rows.count());
-    current_row=model->rows.count()-1;
+    model->insertrow(model->count());
+    current_row=model->count()-1;
     setDirty();
     viewupdate();
 }
