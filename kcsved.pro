@@ -18,8 +18,7 @@ SOURCES += main.cpp\
     qcsvpushbutton.cpp \
     kcsvedmain.cpp \
     selector.cpp \
-    optdialog.cpp \
-    csv_parser.cpp
+    optdialog.cpp
 
 HEADERS  += \
     editrow.h \
@@ -29,8 +28,7 @@ HEADERS  += \
     qcsvpushbutton.h \
     kcsvedmain.h \
     selector.h \
-    optdialog.h \
-    csv_parser.h
+    optdialog.h
 
 FORMS    += \
     editwindow.ui \

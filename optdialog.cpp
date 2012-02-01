@@ -38,6 +38,7 @@ optdialog::optdialog(QWidget *parent) :
     ui->charOutQuote->setText(q?QString('"'):settings.value("characters/outquote").toString());
     ui->charOutSep->setText(settings.value("characters/outcomma",',').toString());
     ui->headerRow->setChecked(settings.value("default/firstheader",true).toBool());
+    ui->quoteSave->setChecked(settings.value("default/writequote",true).toBool());
 }
 
 optdialog::~optdialog()
@@ -52,6 +53,7 @@ void optdialog::accept()
     char c;
     settings.setValue("default/lowindex",ui->headeron->isChecked()?1:0);
     settings.setValue("default/firstheader",ui->headerRow->isChecked()?1:0);
+    settings.setValue("default/writequote",ui->quoteSave->isChecked());
     settings.setValue("characters/inquotestd",ui->charInQuote->text()=="\""?1:0);
     if (ui->charInQuote->text()!="\"")
        settings.setValue("characters/inquote",ui->charInQuote->text());
