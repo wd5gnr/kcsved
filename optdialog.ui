@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>246</height>
+    <width>358</width>
+    <height>244</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Options</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QGroupBox { border: 1px solid black }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -38,8 +41,14 @@
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QGroupBox" name="groupBox">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="title">
         <string>Input Characters</string>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>

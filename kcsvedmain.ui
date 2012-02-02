@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>356</height>
+    <width>618</width>
+    <height>354</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,8 +30,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>604</width>
-         <height>256</height>
+         <width>602</width>
+         <height>254</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -57,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>620</width>
+     <width>618</width>
      <height>21</height>
     </rect>
    </property>
@@ -148,7 +148,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionE_xit">
    <property name="text">
-    <string>E&amp;xit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="statusTip">
     <string>Exit the program</string>
