@@ -16,6 +16,8 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+    http://kcsved.googlecode.com
+
 
 */
 

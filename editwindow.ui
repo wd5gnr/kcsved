@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>292</height>
+    <width>390</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,12 +47,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="htmlmode">
-       <property name="toolTip">
-        <string>Preview as HTML</string>
-       </property>
+      <widget class="QPushButton" name="browseView">
        <property name="text">
-        <string>HTML</string>
+        <string>&amp;Preview HTML</string>
        </property>
       </widget>
      </item>
@@ -82,7 +79,6 @@
  </widget>
  <tabstops>
   <tabstop>textEdit</tabstop>
-  <tabstop>htmlmode</tabstop>
   <tabstop>saveBtn</tabstop>
   <tabstop>cancelBtn</tabstop>
  </tabstops>

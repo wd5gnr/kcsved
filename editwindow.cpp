@@ -20,6 +20,7 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 */
 #include "editwindow.h"
 #include "ui_editwindow.h"
+#include "browseview.h"
 
 // Create edit window
 editWindow::editWindow(QWidget *parent,QString textin, QString title) :
@@ -52,6 +53,7 @@ void editWindow::on_saveBtn_clicked()
     accept();
 }
 
+#if 0  // old html preview mode
 // html preview. Since QT dinks with the HTML, this is read only
 // and we never save the HTML, just generate it on demand to check
 // our markup
@@ -69,4 +71,14 @@ void editWindow::on_htmlmode_clicked()
         ui->textEdit->setPlainText(text);  // go from HTML to plain
         ui->textEdit->setReadOnly(false);
     }
+}
+#endif
+
+// new html preview in a WebView
+
+void editWindow::on_browseView_clicked()
+{
+    BrowseView dlg(this,ui->textEdit->toPlainText());
+    dlg.setWindowTitle(QString("Preview of %1").arg(ui->columnName->text()));
+    dlg.exec();
 }
