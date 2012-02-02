@@ -213,7 +213,7 @@ bool csvmodel::savedoc(void)
 
 
 
-/* Save a document with the given name */ // need to improve error checking TODO
+/* Save a document with the given name */
 bool csvmodel::savedoc(QString fnqs)
 {
     int i,j;
@@ -261,9 +261,9 @@ bool csvmodel::savedoc(QString fnqs)
     // this fails if fnqs already exists, so we need to rename it first and/or unlink
     QFile old(fnqs);
     QFile oldbak(fnqs+".bak");
-    oldbak.remove();
-    old.rename(fnqs+".bak");
-    savefile.rename(fnqs);
+    oldbak.remove();  // allowed to fail, may be no previous backup
+    if (!old.rename(fnqs+".bak")) return false;
+    if (!savefile.rename(fnqs)) return false;
     _openfile=fnqs;   // remember this name
     return true;
 }

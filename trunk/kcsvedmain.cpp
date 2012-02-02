@@ -86,7 +86,6 @@ void KCsvEdMain::destroyUI()
 
 void KCsvEdMain::on_action_New_triggered()
 {
-    destroyUI();
     model.newdoc(true);
     // need to clear the UI
     destroyUI();
@@ -128,7 +127,8 @@ void KCsvEdMain::on_action_Open_triggered()
     QString filename;
     destroyUI();
     model.newdoc(false);
-    rows.empty();  // do I need to kill all the edit rows? probably TODO
+    qDeleteAll(rows);
+    rows.clear();  // do I need to kill all the edit rows? probably TODO
     filename=QFileDialog::getOpenFileName(this,tr("Select CSV File"),"",tr("CSV Files (*.csv);;All Files (*.*)"));
     if (filename.isEmpty()) return;  // cancelled
     if (!model.readdoc(filename))
@@ -265,7 +265,12 @@ void KCsvEdMain::closeEvent(QCloseEvent *e)
         if (QMessageBox::question(this,tr("Confirm"),tr("Document not saved. Really Close?"),QMessageBox::Close|QMessageBox::Abort)
                 ==QMessageBox::Abort) e->ignore(); else e->accept();
     }
-    else e->accept();
+    else
+    {
+        // clean up harmless dangling leak
+        destroyUI();
+        e->accept();
+    }
 
 }
 
@@ -323,17 +328,28 @@ void KCsvEdMain::on_action_Save_As_triggered()
     commit();
     QString fn=QFileDialog::getSaveFileName(this,tr("Save As..."),"",tr("CSV Files (*.csv);;All Files (*.*"));
     if (fn.isNull()) return; // cancel
-    model.savedoc(fn);  // TODO error check
+    if (model.savedoc(fn))
+    {
+        QMessageBox::critical(this,tr("Error"),tr("Can't save file"));
+        return;
+    }
     setDirty(false);
     setWindowTitle("KCsvEd - " + fn);
 }
 
 
-// Regular save (TODO error checking)
+// Regular save
 void KCsvEdMain::on_action_Save_triggered()
 {
     commit();
-    if (model.openfile().isEmpty()) on_action_Save_As_triggered(); else  model.savedoc();
+    if (model.openfile().isEmpty()) on_action_Save_As_triggered(); else
+           {
+               if (!model.savedoc())
+               {
+                QMessageBox::critical(this,tr("Error"),tr("Can't save file"));
+                return;
+               }
+            }
     setDirty(false);
 }
 
