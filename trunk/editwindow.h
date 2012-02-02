@@ -21,7 +21,8 @@ private slots:
 
     void on_saveBtn_clicked();
 
-    void on_htmlmode_clicked();
+
+    void on_browseView_clicked();
 
 private:
     Ui::editWindow *ui;

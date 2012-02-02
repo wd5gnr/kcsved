@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui webkit
 
 TARGET = kcsved
 TEMPLATE = app
@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     qcsvpushbutton.cpp \
     kcsvedmain.cpp \
     selector.cpp \
-    optdialog.cpp
+    optdialog.cpp \
+    browseview.cpp
 
 HEADERS  += \
     editrow.h \
@@ -28,13 +29,15 @@ HEADERS  += \
     qcsvpushbutton.h \
     kcsvedmain.h \
     selector.h \
-    optdialog.h
+    optdialog.h \
+    browseview.h
 
 FORMS    += \
     editwindow.ui \
     kcsvedmain.ui \
     selector.ui \
-    optdialog.ui
+    optdialog.ui \
+    browseview.ui
 
 
 RESOURCES += \
