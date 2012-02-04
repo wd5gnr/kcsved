@@ -14,7 +14,7 @@
    <string>Options</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QGroupBox { border: 1px solid black }</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
