@@ -20,7 +20,6 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 */
 #include "csvmodel.h"
 #include <QStringList>
-#include <csv_parser/csv_parser.hpp>
 #include <QTemporaryFile>
 #include <QFile>
 #include <QTextStream>
