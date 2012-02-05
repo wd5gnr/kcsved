@@ -382,7 +382,7 @@ void KCsvEdMain::on_actionEdit_Header_toggled()
 // Simple about box
 void KCsvEdMain::on_action_About_triggered()
 {
-    QMessageBox::about(this,tr("About kcsved"),tr("kcsved V1.0 - A simple CSV editor by <A href=http://www.awce.com>http://www.awce.com</a>. <A href=http://www.gnu.org/copyleft/gpl.html>License: GNU General Public License Version 3</A>"));
+    QMessageBox::about(this,tr("About kcsved"),tr("kcsved V1.1 - A simple CSV editor by <A href=http://www.awce.com>http://www.awce.com</a>. <A href=http://www.gnu.org/copyleft/gpl.html>License: GNU General Public License Version 3</A>"));
 }
 
 
@@ -399,6 +399,11 @@ void KCsvEdMain::on_action_Insert_Row_triggered()
 void KCsvEdMain::on_action_Delete_Row_triggered()
 {
     if (current_row==0) return;  // won't delete header
+    if (model.count()<=2)
+    {
+        QMessageBox::warning(this,"Warning","Can't delete header and only line");
+        return; // always keep header and one line!
+    }
     model.deleterow(current_row);
     current_row=1;  // bad if we delete too many fix me
     setDirty();
