@@ -1,0 +1,3 @@
+Make sure dirty semantics are working
+
+SVN keyring issue needs fixing.
