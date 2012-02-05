@@ -11,6 +11,7 @@ Features
   * Respects the two quote escape and now translates it both in and out
   * Allows selection of quote or comma character in options.
 
+Version 1.0 released -- works under Linux and Windows. Untested elsewhere.
 
 
 
