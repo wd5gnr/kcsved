@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>354</height>
+    <width>616</width>
+    <height>352</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,8 +30,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>602</width>
-         <height>254</height>
+         <width>600</width>
+         <height>252</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -57,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>618</width>
+     <width>616</width>
      <height>21</height>
     </rect>
    </property>
@@ -65,8 +65,15 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuOpen_Recent">
+     <property name="title">
+      <string>Open &amp;Recent </string>
+     </property>
+     <addaction name="actionDummy"/>
+    </widget>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
+    <addaction name="menuOpen_Recent"/>
     <addaction name="action_Save"/>
     <addaction name="action_Save_As"/>
     <addaction name="separator"/>
@@ -384,6 +391,11 @@
    </property>
    <property name="statusTip">
     <string>Add a new field to the end (adds to all records)</string>
+   </property>
+  </action>
+  <action name="actionDummy">
+   <property name="text">
+    <string>Dummy</string>
    </property>
   </action>
  </widget>

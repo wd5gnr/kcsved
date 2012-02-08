@@ -12,7 +12,6 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -41,12 +40,15 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 // Create main window
 KCsvEdMain::KCsvEdMain(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::KCsvEdMain)
+    ui(new Ui::KCsvEdMain), recent(5,false,this)
 {
     QSettings settings;
     mapper=new QSignalMapper(this); // maps the dynamic button signals to one slot
     vmapper=new QSignalMapper(this);  // same mapping for the select buttons
-    ui->setupUi(this);      // standard call
+    ui->setupUi(this);      // standard
+    recent.SetKeys(settings);
+    recent.Attach(this, ui->menuOpen_Recent);
+    connect(&recent,SIGNAL(openRecent(QString)),this,SLOT(open_file(QString)));
     ui->editFrame->layout()->setAlignment(Qt::AlignTop|Qt::AlignJustify);
     lowindex=settings.value("default/lowindex",1).toInt();
     // hook up the aggreators
@@ -124,20 +126,18 @@ void KCsvEdMain::addeditrow(int i)
 }
 
 // open a file
-void KCsvEdMain::on_action_Open_triggered()
+void KCsvEdMain::open_file(QString filename)
 {
-    QString filename;
     destroyUI();
     model.newdoc(false);
     qDeleteAll(rows);
     rows.clear();  // do I need to kill all the edit rows? probably TODO
-    filename=QFileDialog::getOpenFileName(this,tr("Select CSV File"),"",tr("CSV Files (*.csv);;All Files (*.*)"));
-    if (filename.isEmpty()) return;  // cancelled
     if (!model.readdoc(filename))
     {
         QMessageBox::critical(this,tr("Error"),filename+tr(": Can't open file"));
         return;
     }
+    recent.Add(filename);
     // create the edit rows and wire them up plus populate them
     for (int i=0;i<model.columnCount();i++)
     {
@@ -149,6 +149,15 @@ void KCsvEdMain::on_action_Open_triggered()
     ui->action_Save_As->setDisabled(false);
     setWindowTitle("KCsvEd - " + filename);
     viewupdate();
+}
+
+
+void KCsvEdMain::on_action_Open_triggered()
+{
+    QString filename;
+    filename=QFileDialog::getOpenFileName(this,tr("Select CSV File"),"",tr("CSV Files (*.csv);;All Files (*.*)"));
+    if (filename.isEmpty()) return;  // cancelled
+    open_file(filename);
 
 }
 
@@ -335,6 +344,7 @@ void KCsvEdMain::on_action_Save_As_triggered()
         QMessageBox::critical(this,tr("Error"),tr("Can't save file"));
         return;
     }
+    recent.Add(fn);
     setDirty(false);
     setWindowTitle("KCsvEd - " + fn);
 }
@@ -352,6 +362,7 @@ void KCsvEdMain::on_action_Save_triggered()
                 return;
                }
             }
+// should add name to recent to push it to top
     setDirty(false);
 }
 
@@ -437,3 +448,5 @@ void KCsvEdMain::on_actionAdd_New_Field_triggered()
     setDirty();
     viewupdate();
 }
+
+
