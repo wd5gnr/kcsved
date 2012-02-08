@@ -6,6 +6,7 @@
 #include <QSignalMapper>
 #include "editrow.h"
 #include "csvmodel.h"
+#include "recentfilemgr.h"
 
 namespace Ui {
     class KCsvEdMain;
@@ -70,6 +71,9 @@ private slots:
 
     void on_actionAdd_New_Field_triggered();
 
+    void open_file(QString);  // open file by name
+
+
 private:
     Ui::KCsvEdMain *ui;
     QList<EditRow *> rows;   // UI rows
@@ -82,6 +86,8 @@ private:
     unsigned lowindex;         // 0 if the header is editable data, 1 if not
     void addeditrow(int);    // add another edit row
     void destroyUI();     // kill all the UI
+
+    RecentFileMgr recent;
 
 protected:
     void closeEvent(QCloseEvent *);

@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     kcsvedmain.cpp \
     selector.cpp \
     optdialog.cpp \
-    browseview.cpp
+    browseview.cpp \
+    recentfilemgr.cpp
 
 HEADERS  += \
     editrow.h \
@@ -30,7 +31,8 @@ HEADERS  += \
     kcsvedmain.h \
     selector.h \
     optdialog.h \
-    browseview.h
+    browseview.h \
+    recentfilemgr.h
 
 FORMS    += \
     editwindow.ui \
