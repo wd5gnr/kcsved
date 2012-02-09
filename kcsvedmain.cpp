@@ -46,8 +46,10 @@ KCsvEdMain::KCsvEdMain(QWidget *parent) :
     mapper=new QSignalMapper(this); // maps the dynamic button signals to one slot
     vmapper=new QSignalMapper(this);  // same mapping for the select buttons
     ui->setupUi(this);      // standard
-    recent.SetKeys(settings);
-    recent.Attach(this, ui->menuOpen_Recent);
+//    recent.SetKeys(settings);
+//    recent.Attach(this, ui->menuOpen_Recent);
+    QStringList flist=settings.value("files/recent").toStringList();
+    recent.Add(&flist,"",ui->menuOpen_Recent,5,this);
     connect(&recent,SIGNAL(openRecent(QString)),this,SLOT(open_file(QString)));
     ui->editFrame->layout()->setAlignment(Qt::AlignTop|Qt::AlignJustify);
     lowindex=settings.value("default/lowindex",1).toInt();
@@ -137,7 +139,13 @@ void KCsvEdMain::open_file(QString filename)
         QMessageBox::critical(this,tr("Error"),filename+tr(": Can't open file"));
         return;
     }
-    recent.Add(filename);
+ //   recent.Add(filename);
+    QSettings settings;
+    QStringList flist;
+    flist=settings.value("files/recent").toStringList();
+    flist<<filename;
+    recent.Add( &flist,filename, ui->menuOpen_Recent,5,this);
+    settings.setValue("files/recent",flist);
     // create the edit rows and wire them up plus populate them
     for (int i=0;i<model.columnCount();i++)
     {

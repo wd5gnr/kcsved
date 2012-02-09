@@ -4,6 +4,7 @@
 #include <QString>
 #include <QSettings>
 #include <QMenu>
+#include <QStringList>
 
 #include <QObject>
 
@@ -17,6 +18,9 @@ public:
     void SetMax(int n);
     void Attach(QWidget * parent, QMenu *menu);
     void Add(QString file);
+    void Add(QStringList *list, QString file, QMenu *menu, int max, QWidget *parent);
+
+
 private:
     QSettings *db;
     QMenu *mymenu;
