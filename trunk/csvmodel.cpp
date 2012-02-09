@@ -261,7 +261,8 @@ bool csvmodel::savedoc(QString fnqs)
     QFile old(fnqs);
     QFile oldbak(fnqs+".bak");
     oldbak.remove();  // allowed to fail, may be no previous backup
-    if (!old.rename(fnqs+".bak")) return false;
+// also allowed to fail, may not be an original file on a new save
+    old.rename(fnqs+".bak");
     if (!savefile.rename(fnqs)) return false;
     _openfile=fnqs;   // remember this name
     return true;

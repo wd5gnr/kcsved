@@ -1,90 +1,50 @@
 #include <QFileInfo>
 #include "recentfilemgr.h"
 
-void RecentFileMgr::Add(QStringList *list, QString file, QMenu *menu, int max, QWidget *parent)
+// Add a file to your recent list
+// list is the recent list, file is the new file to add
+// menu is the "recent" menu, max is the number to show
+// longname is true if you want the whole path in the menu
+// You don't have to do anything with the list except
+// read it from storage (e.g., QSetting)
+// and then save it again after calling this
+
+void RecentFileMgr::Add(QStringList *list, QString file, QMenu *menu, int max, bool longname)
 {
-    int i=1;
+    int i=1,j;
+    menu->clear();  // nuke menu
+    // ignore if everything is empty
     if (list->isEmpty()&&file.isEmpty()) return;
-    menu->clear();
-    QFileInfo ifile(file);
-    if (!files.isEmpty() && ifile.exists()) list->insert(0,ifile.canonicalFilePath());
-    list->removeDuplicates();
-    while (list->count()>max) list->removeFirst();
-    foreach(QString f,*list)
+    QFileInfo ifile(file);   // find out about file
+    // if the file exists, add it to the list
+    if (ifile.exists()) list->insert(0,ifile.canonicalFilePath());
+    list->removeDuplicates();  // this appears to keep the lowest # entries
+    QStringListIterator listi(*list);
+    while (listi.hasNext())
     {
-        QFileInfo tfile(f);
+        QString fn=listi.next();
+        QFileInfo tfile(fn);
+        if (!tfile.exists()) list->removeOne(fn);
+    }
+     // trim list to size
+    while (list->count()>max) list->removeLast();
+    for (j=0;j<list->count();j++)
+    {
+        QFileInfo tfile(list->at(j));
         if (!tfile.exists())
         {
-            list->removeOne(f);
             continue;
         }
         QString ftitle;
         QString prefix="&" + QString::number(i++);
-        if (longfname) ftitle=tfile.canonicalFilePath(); else ftitle=tfile.fileName();
+        if (longname) ftitle=tfile.canonicalFilePath(); else ftitle=tfile.fileName();
         QAction *act=menu->addAction(i<=10?prefix+". "+ftitle:ftitle,this,SLOT(recent_trigger()));
-        act->setData(f);
+        act->setData(list->at(j));
         act->setToolTip(tfile.canonicalFilePath());
     }
 }
 
-RecentFileMgr::RecentFileMgr(int maxfiles,bool longnames,QObject *parent) :
-    QObject(parent)
-{
-    longfname=longnames;
-    max=maxfiles;
-    // could set up default here
-    db=NULL;
-}
 
-void RecentFileMgr::SetKeys(QString vendor, QString app)
-{
-    if (db) delete db;
-    db=new QSettings(vendor,app,this);
-}
-
-void RecentFileMgr::SetKeys(QSettings &set)
-{
-    db=new QSettings(set.organizationName(),set.applicationName(),this);
-}
-
-void RecentFileMgr::SetMax(int n)
-{
-    max=n;
-}
-
-void RecentFileMgr::menupdate(void)
-{
-    int i=1;
-    mymenu->clear();
-    files=db->value("files/recent").toStringList();
-    foreach(QString f,files)
-    {
-        QFileInfo tfile(f);
-        if (!tfile.exists()) continue;
-        QString ftitle;
-        QString prefix="&" + QString::number(i++);
-        if (longfname) ftitle=f; else ftitle=tfile.fileName();
-        QAction *act=mymenu->addAction(i<=10?prefix+". "+ftitle:ftitle,this,SLOT(recent_trigger()));
-        act->setData(f);
-    }
-
-}
-
-void RecentFileMgr::Attach(QWidget *parent, QMenu *menu)
-{
-    setParent(parent);
-    mymenu=menu;
-    menupdate();
-}
-
-void RecentFileMgr::Add(QString file)
-{
-    QFileInfo tfile(file);
-    files<<tfile.canonicalFilePath();
-    files.removeDuplicates();
-    db->setValue("files/recent",files);
-    menupdate();
-}
 
 void RecentFileMgr::recent_trigger()
 {
@@ -92,5 +52,3 @@ void RecentFileMgr::recent_trigger()
     emit(openRecent(menu->data().toString()));
 }
 
-// todo: need a delete item
-// could scan if file not exist, remove automatically

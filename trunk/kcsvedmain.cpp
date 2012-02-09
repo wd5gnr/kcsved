@@ -40,16 +40,15 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 // Create main window
 KCsvEdMain::KCsvEdMain(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::KCsvEdMain), recent(5,false,this)
+    ui(new Ui::KCsvEdMain)
 {
     QSettings settings;
     mapper=new QSignalMapper(this); // maps the dynamic button signals to one slot
     vmapper=new QSignalMapper(this);  // same mapping for the select buttons
     ui->setupUi(this);      // standard
-//    recent.SetKeys(settings);
-//    recent.Attach(this, ui->menuOpen_Recent);
+    // set up recent file menu
     QStringList flist=settings.value("files/recent").toStringList();
-    recent.Add(&flist,"",ui->menuOpen_Recent,5,this);
+    recent.Add(&flist,"",ui->menuOpen_Recent);
     connect(&recent,SIGNAL(openRecent(QString)),this,SLOT(open_file(QString)));
     ui->editFrame->layout()->setAlignment(Qt::AlignTop|Qt::AlignJustify);
     lowindex=settings.value("default/lowindex",1).toInt();
@@ -127,6 +126,16 @@ void KCsvEdMain::addeditrow(int i)
     rows<<edit;
 }
 
+void KCsvEdMain::recentMenu(QString filename)
+{
+    QSettings settings;
+    QStringList flist;
+    flist=settings.value("files/recent").toStringList();
+    recent.Add( &flist,filename, ui->menuOpen_Recent);
+    settings.setValue("files/recent",flist);
+
+}
+
 // open a file
 void KCsvEdMain::open_file(QString filename)
 {
@@ -139,13 +148,7 @@ void KCsvEdMain::open_file(QString filename)
         QMessageBox::critical(this,tr("Error"),filename+tr(": Can't open file"));
         return;
     }
- //   recent.Add(filename);
-    QSettings settings;
-    QStringList flist;
-    flist=settings.value("files/recent").toStringList();
-    flist<<filename;
-    recent.Add( &flist,filename, ui->menuOpen_Recent,5,this);
-    settings.setValue("files/recent",flist);
+    recentMenu(filename);
     // create the edit rows and wire them up plus populate them
     for (int i=0;i<model.columnCount();i++)
     {
@@ -347,12 +350,12 @@ void KCsvEdMain::on_action_Save_As_triggered()
     commit();
     QString fn=QFileDialog::getSaveFileName(this,tr("Save As..."),"",tr("CSV Files (*.csv);;All Files (*.*"));
     if (fn.isNull()) return; // cancel
-    if (model.savedoc(fn))
+    if (!model.savedoc(fn))
     {
         QMessageBox::critical(this,tr("Error"),tr("Can't save file"));
         return;
     }
-    recent.Add(fn);
+    recentMenu(fn);
     setDirty(false);
     setWindowTitle("KCsvEd - " + fn);
 }
@@ -370,7 +373,7 @@ void KCsvEdMain::on_action_Save_triggered()
                 return;
                }
             }
-// should add name to recent to push it to top
+    recentMenu(model.openfile());
     setDirty(false);
 }
 

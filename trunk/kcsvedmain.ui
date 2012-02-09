@@ -30,8 +30,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>600</width>
-         <height>252</height>
+         <width>594</width>
+         <height>227</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -58,7 +58,7 @@
      <x>0</x>
      <y>0</y>
      <width>616</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -182,7 +182,7 @@
      <normaloff>:/icons/document-open-2.png</normaloff>:/icons/document-open-2.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open</string>
+    <string>&amp;Open...</string>
    </property>
    <property name="statusTip">
     <string>Open a file</string>
@@ -206,7 +206,7 @@
      <normaloff>:/icons/document-save-as-2.png</normaloff>:/icons/document-save-as-2.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save As...</string>
+    <string>Save &amp;As...</string>
    </property>
    <property name="statusTip">
     <string>Save current document with new name</string>

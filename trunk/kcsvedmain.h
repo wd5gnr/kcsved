@@ -86,6 +86,7 @@ private:
     unsigned lowindex;         // 0 if the header is editable data, 1 if not
     void addeditrow(int);    // add another edit row
     void destroyUI();     // kill all the UI
+    void recentMenu(QString filename);  // set up recent file menu
 
     RecentFileMgr recent;
 

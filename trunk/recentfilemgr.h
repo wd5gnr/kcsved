@@ -2,7 +2,6 @@
 #define RECENTFILEMGR_H
 
 #include <QString>
-#include <QSettings>
 #include <QMenu>
 #include <QStringList>
 
@@ -12,30 +11,24 @@ class RecentFileMgr : public QObject
 {
     Q_OBJECT
 public:
-    explicit RecentFileMgr(int maxfiles=5,bool longfiles=true,QObject *parent = 0);
-    void SetKeys(QString vendor, QString app);
-    void SetKeys(QSettings &set);
-    void SetMax(int n);
-    void Attach(QWidget * parent, QMenu *menu);
-    void Add(QString file);
-    void Add(QStringList *list, QString file, QMenu *menu, int max, QWidget *parent);
+    explicit RecentFileMgr(QObject *parent = 0) {}  // create it
+    // Add a file to your recent list
+    // list is the recent list, file is the new file to add
+    // menu is the "recent" menu, max is the number to show
+    // longname is true if you want the whole path in the menu
+    // You don't have to do anything with the list except
+    // read it from storage (e.g., QSetting)
+    // and then save it again after calling this
+    void Add(QStringList *list, QString file, QMenu *menu, int max=5, bool longname=false);
 
-
-private:
-    QSettings *db;
-    QMenu *mymenu;
-    QStringList files;
-    int max;
-    bool longfname;
-    void menupdate(void);
 
 signals:
-    void openRecent(QString);
+    void openRecent(QString);   // hook this up to get open file actions
 
 public slots:
 
 protected slots:
-    void recent_trigger(void);
+    void recent_trigger(void);  // the menus hook up here
 
 
 };
