@@ -1,6 +1,32 @@
 #include <QFileInfo>
 #include "recentfilemgr.h"
 
+void RecentFileMgr::Add(QStringList *list, QString file, QMenu *menu, int max, QWidget *parent)
+{
+    int i=1;
+    if (list->isEmpty()&&file.isEmpty()) return;
+    menu->clear();
+    QFileInfo ifile(file);
+    if (!files.isEmpty() && ifile.exists()) list->insert(0,ifile.canonicalFilePath());
+    list->removeDuplicates();
+    while (list->count()>max) list->removeFirst();
+    foreach(QString f,*list)
+    {
+        QFileInfo tfile(f);
+        if (!tfile.exists())
+        {
+            list->removeOne(f);
+            continue;
+        }
+        QString ftitle;
+        QString prefix="&" + QString::number(i++);
+        if (longfname) ftitle=tfile.canonicalFilePath(); else ftitle=tfile.fileName();
+        QAction *act=menu->addAction(i<=10?prefix+". "+ftitle:ftitle,this,SLOT(recent_trigger()));
+        act->setData(f);
+        act->setToolTip(tfile.canonicalFilePath());
+    }
+}
+
 RecentFileMgr::RecentFileMgr(int maxfiles,bool longnames,QObject *parent) :
     QObject(parent)
 {
