@@ -13,7 +13,7 @@ Features
 
 Version 1.0 released -- works under Linux and Windows. Untested elsewhere.
 
-[Database Support]
+Read about [Database] support.
 
 
 = Details =
