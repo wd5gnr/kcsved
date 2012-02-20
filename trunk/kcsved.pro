@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkit
+QT       += core gui webkit sql
 
 TARGET = kcsved
 TEMPLATE = app
@@ -32,7 +32,8 @@ HEADERS  += \
     selector.h \
     optdialog.h \
     browseview.h \
-    recentfilemgr.h
+    recentfilemgr.h \
+    dbdoc.h
 
 FORMS    += \
     editwindow.ui \

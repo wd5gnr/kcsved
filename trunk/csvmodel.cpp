@@ -26,6 +26,11 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 #include <QSettings>
 #include <QVariant>
 
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMessageBox>
+
+
 // Third party parser was messing up so rewrote it (twice, since the first time got eaten by the dog)
 
 csvmodel::csvmodel()
@@ -302,4 +307,118 @@ void csvmodel::addcol(QString name)
         }
 
     }
+}
+
+
+bool csvmodel::dbsave(QString dbname)
+{
+    QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(dbname);
+    if (!db.open()) return false;
+    db.transaction();
+    bool b=dbsave_worker(db);
+    if (b)
+        b=db.commit();
+    else
+        db.rollback();
+    db.close();
+    return b;
+}
+
+bool csvmodel::dbsave_worker(QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    bool b;
+    QString q0;
+    QString q1;
+    QString q;
+    QString col;
+    b=query.exec("Create table if not exists csvcolumns (name text)");
+    if (!b) return false;
+    b=query.exec("delete from csvcolumns");
+    if (!b) return false;
+    q1=q0="(";
+    bool first=true;
+    foreach(col,rows[0]) {
+        q="insert into csvcolumns (name) values (" + QString("\"") + col + "\")";
+
+        if (!first) {
+            q0+=",";
+            q1+=",";
+        }
+        else {
+            first=false;
+        }
+        col.replace(" ","_");
+        q0+=col+" text";
+        q1+=col;
+        b=query.exec(q);
+        if (!b) return false;
+    }
+    q0+=")";
+    q1+=")";
+    q="create table if not exists csvdata " + q0;
+    b=query.exec(q);
+    if (!b) return false;
+    b=query.exec("delete from csvdata");
+    if (!b) return false;
+    for (unsigned i=1;i<count();i++)
+    {
+        q="insert into csvdata " + q1 + " VALUES (";
+        for (int j=0;j<rows[i].count();j++) {
+            QString v=rows[i][j];
+            v.replace("\"","\"\"");
+            q+="\""+v+"\"";
+            if (j+1!=rows[i].count()) q+=",";
+        }
+        q+=")";
+        b=query.exec(q);
+        if (!b) return false;
+    }
+    query.finish();
+    return b;
+}
+
+bool csvmodel::dbload(QString dbname)
+{
+    QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(dbname);
+    if (!db.open()) return false;
+    bool b=dbload_worker(db);
+    db.close();
+    return b;
+}
+
+bool csvmodel::dbload_worker(QSqlDatabase &db)
+{
+
+    newdoc();
+    QSqlQuery query(db);
+    QStringList work;
+    QString qstring;
+    bool b;
+    // query columns
+    b=query.exec("select name from csvcolumns");
+    if (!b) return false;
+    while (query.next())
+    {
+        work.append(query.value(0).toString());
+        colct++;
+    }
+    // put them in row[0]
+    rows.append(work);
+    // get all rows and put each one in a row
+    qstring="select ";
+    qstring+=work.join(QChar(','));
+    qstring+=" from csvdata";
+    b=query.exec(qstring);
+    if (!b) return false;
+    while (query.next())
+    {
+        QStringList work1;
+        for (int i=0;i<work.count();i++)
+            work1<<query.value(i).toString();
+        rows.append(work1);
+    }
+return true;
 }

@@ -36,6 +36,8 @@ Copyright (C) 2012 by Al Williams (al.williams@awce.com)
 #include "selector.h"
 #include "optdialog.h"
 
+#include "dbdoc.h"
+
 
 // Create main window
 KCsvEdMain::KCsvEdMain(QWidget *parent) :
@@ -105,6 +107,7 @@ void KCsvEdMain::on_action_New_triggered()
     current_row=1;
     ui->action_Save_As->setDisabled(false);
     addeditrow(0);
+    setWindowTitle("KCsvEd");
     viewupdate();
 }
 
@@ -156,7 +159,14 @@ void KCsvEdMain::open_file(QString filename)
     }
 
     // set current row to 1 even if edit headers is checked
-    current_row=1;
+    // unless there is only a header
+    current_row=model.count()>1?1:0;
+    if (current_row==0)    // set edit header
+    {
+        lowindex=0;
+        ui->actionEdit_Header->setChecked(true);
+    }
+
     ui->action_Save_As->setDisabled(false);
     setWindowTitle("KCsvEd - " + filename);
     viewupdate();
@@ -190,8 +200,8 @@ void KCsvEdMain::viewupdate(void)
     }
     ui->action_First->setDisabled(current_row==lowindex);
     ui->action_Previous->setDisabled(current_row==lowindex);
-    ui->action_Next->setDisabled(current_row==model.count()-1);
-    ui->action_Last->setDisabled(current_row==model.count()-1);
+    ui->action_Next->setDisabled(model.count()==0||current_row==model.count()-1);
+    ui->action_Last->setDisabled(model.count()==0||current_row==model.count()-1);
     ui->statusBar->showMessage(QString(tr("Record: ")) + QString::number(current_row));
 
 }
@@ -380,6 +390,7 @@ void KCsvEdMain::on_action_Save_triggered()
 // Handle edit headers toggle
 void KCsvEdMain::on_actionEdit_Header_toggled()
 {
+    if (model.count()<2) return;   // empty or header, no change
     bool state=ui->actionEdit_Header->isChecked();
     lowindex=state?0:1;
     commit();
@@ -461,3 +472,44 @@ void KCsvEdMain::on_actionAdd_New_Field_triggered()
 }
 
 
+
+void KCsvEdMain::on_actionData_base_Save_triggered()
+{
+    QString name;
+    name=QFileDialog::getSaveFileName(this,tr("Select Database File"),"",tr("sql Files (*.sql);;All Files (*.*)"));
+    if (name.isEmpty()) return;
+    if (!model.dbsave(name))
+    {
+        QMessageBox::critical(this,tr("Error"),name+tr(": Database writing error"));
+        return;
+    }
+
+
+}
+
+void KCsvEdMain::on_action_Database_Open_triggered()
+{
+    QString name;
+    name=QFileDialog::getOpenFileName(this,tr("Select Database File"),"",tr("sql Files (*.sql);;All Files (*.*)"));
+    if (name.isEmpty()) return;
+    destroyUI();
+    qDeleteAll(rows);
+    if (!model.dbload(name))
+    {
+        QMessageBox::critical(this,tr("Error"),name+tr(": Can't open file"));
+        return;
+    }
+    rows.clear();
+    // create the edit rows and wire them up plus populate them
+    for (int i=0;i<model.columnCount();i++)
+    {
+        addeditrow(i);
+    }
+
+    // set current row to 1 even if edit headers is checked
+    current_row=1;
+    ui->action_Save_As->setDisabled(false);
+    setWindowTitle("KCsvEd");
+    viewupdate();
+
+}

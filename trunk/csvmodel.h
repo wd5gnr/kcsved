@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QStringList>
+#include <QSqlDatabase>
 
 class csvmodel
 {
@@ -21,10 +22,15 @@ public:
     void insertrow(int index);        // insert a row at position
     void addcol(QString name);        // add a new column of name
     int columnCount(void) { return colct; }
+    bool dbsave(QString dbname);
+    bool dbload(QString dbname);
+
 protected:
     QList<QStringList> rows;        // array of string lists, each list is a row of the file
     QString _openfile;                 // currently open file
     int colct;                        // max number of columns
+    bool dbsave_worker(QSqlDatabase &db);
+    bool dbload_worker(QSqlDatabase &db);
 };
 
 #endif // CSVMODEL_H
