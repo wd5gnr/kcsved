@@ -11,7 +11,6 @@ class RecentFileMgr : public QObject
 {
     Q_OBJECT
 public:
-    explicit RecentFileMgr(QObject *parent = 0) {}  // create it
     // Add a file to your recent list
     // list is the recent list, file is the new file to add
     // menu is the "recent" menu, max is the number to show

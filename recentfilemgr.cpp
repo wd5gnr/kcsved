@@ -11,33 +11,34 @@
 
 void RecentFileMgr::Add(QStringList *list, QString file, QMenu *menu, int max, bool longname)
 {
-    int i=1,j;
+    int i=1;
+    int j;
     menu->clear();  // nuke menu
     // ignore if everything is empty
     if (list->isEmpty()&&file.isEmpty()) return;
     QFileInfo ifile(file);   // find out about file
     // if the file exists, add it to the list
-    if (ifile.exists()) list->insert(0,ifile.canonicalFilePath());
+    if (ifile.exists())
+        list->insert(0,ifile.canonicalFilePath());
     list->removeDuplicates();  // this appears to keep the lowest # entries
     QStringListIterator listi(*list);
-    while (listi.hasNext())
-    {
+    while (listi.hasNext()) {
         QString fn=listi.next();
         QFileInfo tfile(fn);
         if (!tfile.exists()) list->removeOne(fn);
     }
-     // trim list to size
+    // trim list to size
     while (list->count()>max) list->removeLast();
-    for (j=0;j<list->count();j++)
-    {
+    for (j=0; j<list->count(); j++) {
         QFileInfo tfile(list->at(j));
         if (!tfile.exists())
-        {
             continue;
-        }
         QString ftitle;
         QString prefix="&" + QString::number(i++);
-        if (longname) ftitle=tfile.canonicalFilePath(); else ftitle=tfile.fileName();
+        if (longname)
+            ftitle=tfile.canonicalFilePath();
+        else
+            ftitle=tfile.fileName();
         QAction *act=menu->addAction(i<=10?prefix+". "+ftitle:ftitle,this,SLOT(recent_trigger()));
         act->setData(list->at(j));
         act->setToolTip(tfile.canonicalFilePath());

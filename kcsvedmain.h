@@ -74,6 +74,10 @@ private slots:
     void open_file(QString);  // open file by name
 
 
+    void on_actionData_base_Save_triggered();
+
+    void on_action_Database_Open_triggered();
+
 private:
     Ui::KCsvEdMain *ui;
     QList<EditRow *> rows;   // UI rows
