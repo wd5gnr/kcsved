@@ -13,6 +13,7 @@ Features
 
 Version 1.0 released -- works under Linux and Windows. Untested elsewhere.
 
+[Database Support]
 
 
 = Details =
@@ -24,5 +25,3 @@ http://kcsved.googlecode.com/svn/wiki/images/screenshot_023.png
 http://kcsved.googlecode.com/svn/wiki/images/screenshot_024.png
 
 http://kcsved.googlecode.com/svn/wiki/images/screenshot_025.png
-
-
