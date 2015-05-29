@@ -1,0 +1,1 @@
+Reads a CSV file and displays it a line at a time in separate fields. Each field can be "expanded" into a full editor with HTML preview.
